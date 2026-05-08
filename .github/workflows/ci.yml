@@ -4,7 +4,6 @@ on:
   push:
     branches: 
       - main
-  workflow_dispatch:
 
 jobs:
   backend:
@@ -18,7 +17,7 @@ jobs:
         run: docker build -t wanderlust-backend ./backend/
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           image-ref: wanderlust-backend
           format: table
@@ -36,7 +35,7 @@ jobs:
         run: docker build -t wanderlust-frontend ./frontend/
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           image-ref: wanderlust-frontend
           format: table
