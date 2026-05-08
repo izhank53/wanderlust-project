@@ -1,0 +1,28 @@
+name: Wanderlust CI
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build backedn Docker image
+        run: docker build -t wanterlust-backend ./backend/
+
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: build frontend docker image 
+        run: docket build -t wanderlust-frontend ./frontend/
