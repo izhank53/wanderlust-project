@@ -17,7 +17,7 @@ jobs:
         run: docker build -t wanderlust-backend ./backend/
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: wanderlust-backend
           format: table
@@ -35,7 +35,7 @@ jobs:
         run: docker build -t wanderlust-frontend ./frontend/
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: wanderlust-frontend
           format: table
