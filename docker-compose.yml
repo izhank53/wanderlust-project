@@ -1,36 +1,68 @@
 services:
+
+#Wanderlust Backend Service
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: wanderlust-backend
+
+    restart: unless-stopped
+
     ports:
       - "5000:5000"
+    
+    networks:
+      - wanderlust-network
+    
     environment:
       MONGODB_URI: ${MONGODB_URI}
       REDIS_URL: ${REDIS_URL}
       PORT: ${PORT}
+    
     depends_on:
       - mongo
       - redis    
 
+#Wanderlust Frontend Service
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: wanderlust-frontend
+    
+    restart: unless-stopped
+    
     ports:
       - "3000:80"
-
+    
+    networks:
+      - wanderlust-network
   mongo:
     image: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    networks:   
+      - wanderlust-network
+    volumes:
+      - mongo-data:/data/db
     
 
   redis:
     image: redis
     restart: always
-   
+    networks:
+      - wanderlust-network
+    volumes:
+     - redis-data:/data
 
+
+volumes:
+  mongo-data:
+  redis-data:
+
+networks:
+  wanderlust-network:
       
