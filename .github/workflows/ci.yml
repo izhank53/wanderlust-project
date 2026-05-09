@@ -77,4 +77,4 @@ jobs:
   
 # Push Frontend Docker Image to Docker HUB
       - name: Push Frontend Image to Docker Hub
-        run: docker push -t ${{secrets.DOCKERHUB_USERNAME}}/wanderlust-frontend:${{ github.sha }}
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/wanderlust-frontend:${{ github.sha }}
