@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: backend-deployment
+
+  labels:
+    app: backend
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: backend #deployment will find/manage pods with label app: backend
+
+ #blueprint for creating pods
+  template:
+
+    metadata:
+      labels:
+      app: backend #deployment creates pod with label app: backend
+
+    spec:
+      containers:
+        - name: backend
+
+          image: izhank53/wanderlust-backend:latest
+
+          ports:
+            - containerPort: 5000
+
+

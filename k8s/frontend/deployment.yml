@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+
+  labels:
+    app: fronted 
+
+spec: 
+  replicas: 2
+
+  selectors:
+    matchLabels: 
+      app: frontend
+
+  template:
+
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: frontend
+          
+          image: izhank53/wanderlust-frontend:latest
+
+          ports:
+            - containerPort: 3000

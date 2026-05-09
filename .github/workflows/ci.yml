@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - main
+  workflow_dispatch:
 
 jobs:
   backend:
@@ -20,9 +21,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      #Run Hadolint Scan
+      - name: Lint backend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./backend/Dockerfile
+
       #Build Backend Docker Image
-      - name: Build backedn Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:${{ github.sha }} ./backend/
+      - name: Build backend Docker image
+        run: |
+         docker build \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:${{ github.sha }} \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:latest \
+          ./backend/
 
       # Run Trivy Scan
       - name: Run Trivy Scan
@@ -33,17 +44,12 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 1
       
-      #Run Hadolint Scan
-      - name: Lint backend Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ./backend/Dockerfile
 
       # Push Backend Docker Image to Docker HUB
       - name: Push Backend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:${{ github.sha }}
-
-
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-backend:latest
   frontend:
     runs-on: ubuntu-latest
 
@@ -57,24 +63,31 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Lint Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./frontend/Dockerfile
+
 # Build Frontend Docker Image
-      - name: build frontend docker image 
-        run: docker build -t ${{secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:${{ github.sha }} ./frontend/
+      - name: Build Frontend Docker Image
+        run: |
+         docker build \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:${{ github.sha }} \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:latest \
+          ./frontend/
 
 # Run Trivy Scan
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:${{ github.sha }}
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:${{ github.sha }}
           format: table
           severity: HIGH,CRITICAL
           exit-code: 1
 
-      - name: Lint Frontend Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: ./frontend/Dockerfile
   
 # Push Frontend Docker Image to Docker HUB
       - name: Push Frontend Image to Docker Hub
-        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/wanderlust-frontend:${{ github.sha }}
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wanderlust-frontend:latest
