@@ -27,6 +27,24 @@ RUN addgroup -S nodegroup && adduser -S salman -G nodegroup
 #COPY --from=builder /app/node_modules ./node_modules  
 COPY --from=builder /app .
 
+FROM node:20-alpine AS runner
+
+RUN apk update && apk upgrade --no-cache
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+
+# Remove unnecessary package managers
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    && rm -rf /usr/local/bin/npm \
+    && rm -rf /usr/local/bin/npx \
+    && rm -rf /usr/local/lib/node_modules/corepack
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]
+
 #this tells node.js that this app is running in production mode, it will help to optimize the performance of the app and it will also disable some development features that are not needed in production
 ENV NODE_ENV=production
 
