@@ -12,6 +12,9 @@ RUN npm ci --omit=dev
 COPY . .
 
 FROM node:20-alpine AS runner
+
+RUN apk update && apk upgrade --no-cache
+
 WORKDIR /app
 
 # Create a non-root user to run the application securely
