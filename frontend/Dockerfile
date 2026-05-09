@@ -16,6 +16,8 @@ RUN npm run build
 
 FROM nginx:stable-alpine AS runner
 
+RUN apk update && apk upgrade --no-cache
+
 #this is nginx default location for static file, and it will be served on webpage
 WORKDIR /usr/share/nginx/html
 
