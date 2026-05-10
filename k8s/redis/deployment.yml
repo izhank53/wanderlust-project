@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+
+#metadata defines the name, namespace and labels for the deployment
+metadata:
+  name: redis-deployment
+  namespace: wanderlust
+
+#labels are used to organize and select resources
+  labels:  
+    app: redis
+
+#spec defined how deployment should look like, 
+#how many replicas, which pods to manage and 
+#how the pods should look like  
+spec: 
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: redis
+
+#blueprint for creating pods
+  template:  
+    metadata:
+      labels:
+        app: redis
+
+
+#2nd spec defines the pods details like volumes, containers, images and ports
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+
+          ports:
+            - containerPort: 6379

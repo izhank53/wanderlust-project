@@ -1,9 +1,5 @@
 import Post from '../models/post.js';
-import {
-  deleteDataFromCache,
-  retrieveDataFromCache,
-  storeDataInCache,
-} from '../utils/cache-posts.js';
+import { deleteDataFromCache, storeDataInCache } from '../utils/cache-posts.js';
 import { HTTP_STATUS, REDIS_KEYS, RESPONSE_MESSAGES, validCategories } from '../utils/constants.js';
 export const createPostHandler = async (req, res) => {
   try {
@@ -133,6 +129,12 @@ export const updatePostHandler = async (req, res) => {
       return res.status(HTTP_STATUS.NOT_FOUND).json({ message: RESPONSE_MESSAGES.POSTS.NOT_FOUND });
     }
 
+    await Promise.all([
+      deleteDataFromCache(REDIS_KEYS.ALL_POSTS),
+      deleteDataFromCache(REDIS_KEYS.FEATURED_POSTS),
+      deleteDataFromCache(REDIS_KEYS.LATEST_POSTS),
+    ]);
+
     res.status(HTTP_STATUS.OK).json(updatedPost);
   } catch (err) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
@@ -147,6 +149,12 @@ export const deletePostByIdHandler = async (req, res) => {
     if (!post) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({ message: RESPONSE_MESSAGES.POSTS.NOT_FOUND });
     }
+
+    await Promise.all([
+      deleteDataFromCache(REDIS_KEYS.ALL_POSTS),
+      deleteDataFromCache(REDIS_KEYS.FEATURED_POSTS),
+      deleteDataFromCache(REDIS_KEYS.LATEST_POSTS),
+    ]);
 
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.POSTS.DELETED });
   } catch (err) {

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: mongo-deployment
+  namespace: wanderlust
+
+  labels:
+    app: mongo
+
+#spec defined the desired state of the deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+
+#blueprint for creating pods
+  template: 
+
+    metadata:
+      labels:
+        app: mongo
+
+#spec of a POD created by deployment
+    spec: 
+         
+      containers:
+        - name: mongo
+        
+      
+          image: mongo:latest
+
+          ports:
+            - containerPort: 27017
+  
+  

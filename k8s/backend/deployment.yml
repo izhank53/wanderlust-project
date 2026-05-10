@@ -4,10 +4,12 @@ kind: Deployment
 
 metadata:
   name: backend-deployment
+  namespace: wanderlust
 
   labels:
     app: backend
 
+#spec defines the desired state of the deployment
 spec:
   replicas: 2
 
@@ -20,7 +22,7 @@ spec:
 
     metadata:
       labels:
-      app: backend #deployment creates pod with label app: backend
+        app: backend #deployment creates pod with label app: backend
 
     spec:
       containers:
@@ -30,5 +32,15 @@ spec:
 
           ports:
             - containerPort: 5000
+
+          env:
+            - name: MONGODB_URI
+              value: mongodb://mongo-service:27017
+
+            - name: REDIS_URL
+              value: redis://redis-service:6379
+
+            - name: PORT
+              value: "5000"
 
 

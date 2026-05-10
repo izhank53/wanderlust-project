@@ -16,9 +16,9 @@ services:
       - wanderlust-network
     
     environment:
-      MONGODB_URI: ${MONGODB_URI}
-      REDIS_URL: ${REDIS_URL}
-      PORT: ${PORT}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/wanderlust}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      PORT: ${PORT:-5000}
     
     depends_on:
       - mongo
